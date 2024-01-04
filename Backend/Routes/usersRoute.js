@@ -6,11 +6,15 @@ const usersRoute = express.Router();
 usersRoute.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const user = await User.create({ name, email, password });
-    console.log(user);
-    res.send(user);
+    const userExists = await User.findOne({ email: email });
+    if (userExists) {
+      throw new Error("User Exist");
+    }
+    const userCreated = await User.create({ name, email, password });
+    console.log(userCreated);
+    res.send(userCreated);
   } catch (error) {
-    console.log(error);
+    res.send(error);
   }
 });
 //login user
